@@ -60,7 +60,8 @@ namespace MyPacketCapturer
                     DnsSuffix = data.DnsSuffix,
                     DnsAddress = data.DnsAddresses,
                     IpAddressInformation =
-                        data.UnicastAddresses.FirstOrDefault(d => d.Address.AddressFamily == AddressFamily.InterNetwork)
+                        data.UnicastAddresses.FirstOrDefault(d => d.Address.AddressFamily == AddressFamily.InterNetwork),
+                    MacAddress = enterFace.GetPhysicalAddress()
                 };
                 return interfaceData;
             }

@@ -12,5 +12,7 @@ namespace MyPacketCapturer
         public string DnsSuffix { get; set; }
         public IPAddressCollection DnsAddress { get; set; }
         public UnicastIPAddressInformation IpAddressInformation { get; set; }
+
+        public PhysicalAddress MacAddress { get; set; }
     }
 }

@@ -35,9 +35,22 @@ namespace MyPacketCapturer
             txtIp.Text = data.IpAddressInformation.Address.ToString();
             txtMask.Text = data.IpAddressInformation.IPv4Mask.ToString();
             txtClass.Text = Utils.IdentifyClass(data.IpAddressInformation.Address);
+
+            // Mac address format stolen from http://stackoverflow.com/questions/13775037/mac-address-format-from-string
+            txtMacAddress.Text = string.Join(":",data.MacAddress.GetAddressBytes().Select(bite => bite.ToString("X2")));
             cboAttackers.Items.AddRange(ipToMac.Keys.ToArray());
         }
 
-       
+        private void FrmSmurf_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FrmSmurf_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Instantiations--;
+        }
+
+      
     }
 }
