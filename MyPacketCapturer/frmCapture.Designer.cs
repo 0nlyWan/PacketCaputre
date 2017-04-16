@@ -41,13 +41,15 @@
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.packetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.attacksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smurfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.txtNumPackets = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtGUID = new System.Windows.Forms.TextBox();
-            this.attacksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.smurfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.synFoodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rogueDHCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,7 +72,7 @@
             this.cmbDevices.Location = new System.Drawing.Point(40, 98);
             this.cmbDevices.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbDevices.Name = "cmbDevices";
-            this.cmbDevices.Size = new System.Drawing.Size(799, 45);
+            this.cmbDevices.Size = new System.Drawing.Size(799, 28);
             this.cmbDevices.TabIndex = 1;
             this.cmbDevices.SelectedIndexChanged += new System.EventHandler(this.cmbDevices_SelectedIndexChanged);
             // 
@@ -99,7 +101,7 @@
             this.attacksToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(929, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(929, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -109,21 +111,21 @@
             this.saveToolStripMenuItem,
             this.openToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 38);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -132,13 +134,13 @@
             this.screenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearToolStripMenuItem});
             this.screenToolStripMenuItem.Name = "screenToolStripMenuItem";
-            this.screenToolStripMenuItem.Size = new System.Drawing.Size(99, 38);
+            this.screenToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.screenToolStripMenuItem.Text = "Screen";
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             // 
             // packetsToolStripMenuItem
@@ -146,15 +148,32 @@
             this.packetsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sendWindowToolStripMenuItem});
             this.packetsToolStripMenuItem.Name = "packetsToolStripMenuItem";
-            this.packetsToolStripMenuItem.Size = new System.Drawing.Size(105, 38);
+            this.packetsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.packetsToolStripMenuItem.Text = "Packets";
             // 
             // sendWindowToolStripMenuItem
             // 
             this.sendWindowToolStripMenuItem.Name = "sendWindowToolStripMenuItem";
-            this.sendWindowToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
+            this.sendWindowToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.sendWindowToolStripMenuItem.Text = "&Send Window";
             this.sendWindowToolStripMenuItem.Click += new System.EventHandler(this.sendWindowToolStripMenuItem_Click);
+            // 
+            // attacksToolStripMenuItem
+            // 
+            this.attacksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.smurfToolStripMenuItem,
+            this.synFoodToolStripMenuItem,
+            this.rogueDHCPToolStripMenuItem});
+            this.attacksToolStripMenuItem.Name = "attacksToolStripMenuItem";
+            this.attacksToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.attacksToolStripMenuItem.Text = "Attacks";
+            // 
+            // smurfToolStripMenuItem
+            // 
+            this.smurfToolStripMenuItem.Name = "smurfToolStripMenuItem";
+            this.smurfToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.smurfToolStripMenuItem.Text = "Smurf";
+            this.smurfToolStripMenuItem.Click += new System.EventHandler(this.smurfToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -164,7 +183,7 @@
             // 
             this.txtNumPackets.Location = new System.Drawing.Point(739, 51);
             this.txtNumPackets.Name = "txtNumPackets";
-            this.txtNumPackets.Size = new System.Drawing.Size(100, 44);
+            this.txtNumPackets.Size = new System.Drawing.Size(100, 26);
             this.txtNumPackets.TabIndex = 4;
             this.txtNumPackets.Text = "0";
             this.txtNumPackets.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -175,7 +194,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(502, 58);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(231, 30);
+            this.label1.Size = new System.Drawing.Size(122, 16);
             this.label1.TabIndex = 5;
             this.label1.Text = "Number of Packets";
             // 
@@ -183,27 +202,24 @@
             // 
             this.txtGUID.Location = new System.Drawing.Point(43, 151);
             this.txtGUID.Name = "txtGUID";
-            this.txtGUID.Size = new System.Drawing.Size(796, 44);
+            this.txtGUID.Size = new System.Drawing.Size(796, 26);
             this.txtGUID.TabIndex = 6;
             // 
-            // attacksToolStripMenuItem
+            // synFoodToolStripMenuItem
             // 
-            this.attacksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.smurfToolStripMenuItem});
-            this.attacksToolStripMenuItem.Name = "attacksToolStripMenuItem";
-            this.attacksToolStripMenuItem.Size = new System.Drawing.Size(103, 38);
-            this.attacksToolStripMenuItem.Text = "Attacks";
+            this.synFoodToolStripMenuItem.Name = "synFoodToolStripMenuItem";
+            this.synFoodToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.synFoodToolStripMenuItem.Text = "Syn Flood";
             // 
-            // smurfToolStripMenuItem
+            // rogueDHCPToolStripMenuItem
             // 
-            this.smurfToolStripMenuItem.Name = "smurfToolStripMenuItem";
-            this.smurfToolStripMenuItem.Size = new System.Drawing.Size(269, 38);
-            this.smurfToolStripMenuItem.Text = "Smurf";
-            this.smurfToolStripMenuItem.Click += new System.EventHandler(this.smurfToolStripMenuItem_Click);
+            this.rogueDHCPToolStripMenuItem.Name = "rogueDHCPToolStripMenuItem";
+            this.rogueDHCPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rogueDHCPToolStripMenuItem.Text = "Rogue DHCP";
             // 
             // frmCapture
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(929, 859);
             this.Controls.Add(this.txtGUID);
@@ -249,6 +265,8 @@
         private System.Windows.Forms.TextBox txtGUID;
         private System.Windows.Forms.ToolStripMenuItem attacksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem smurfToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem synFoodToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rogueDHCPToolStripMenuItem;
     }
 }
 

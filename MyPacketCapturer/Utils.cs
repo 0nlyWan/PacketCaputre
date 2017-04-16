@@ -4,28 +4,24 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using PcapDotNet.Packets;
+using PcapDotNet.Packets.Ethernet;
+using PcapDotNet.Packets.Icmp;
+using PcapDotNet.Packets.IpV4;
+using AddressFamily = System.Net.Sockets.AddressFamily;
 
 namespace MyPacketCapturer
 {
     static class Utils
+        // Static class of just utility functions.
     {
-        // ip range finder.
-        public static void rangeFinder(InterfaceData ipData)
-        {
-
-            const int totalBits = 8;
-            var stuff = ipData.IpAddressInformation.IPv4Mask.GetAddressBytes(); // get the bytes of the mask in array Form.
-            var data = stuff.Select(d => Convert.ToString(d, 2)); // convert masks to binary...
-            var moreShit = string.Join(" ", data); // join them by a space. probably don't need to join... just count 1s and 0s
-            // that will identify host and subnets.
-        }
-
+        #region Device Data
         public static string IdentifyClass(IPAddress ipAddress)
         {
+            // determine what class your ip is based on your first octet.
             var seperateOctets = ipAddress.ToString().Split('.');
             int firstOctect = int.Parse(seperateOctets[0]);
 
@@ -33,11 +29,9 @@ namespace MyPacketCapturer
                 return "Class A";
             if (firstOctect <= 191)
                 return "Class B";
-
             return "Class C";
         }
-
-
+       
         public static InterfaceData ReturnInterfaceData()
         {
             // Grab only the Network Interfaces that are either wireless OR ethernet and have DHCP enabled.
@@ -60,7 +54,7 @@ namespace MyPacketCapturer
                     DnsSuffix = data.DnsSuffix,
                     DnsAddress = data.DnsAddresses,
                     IpAddressInformation =
-                        data.UnicastAddresses.FirstOrDefault(d => d.Address.AddressFamily == AddressFamily.InterNetwork),
+                        data.UnicastAddresses.FirstOrDefault(d => d.Address.AddressFamily == AddressFamily.InterNetwork), //UnicastAddresses has a list of IPAddressInfo. I need just one.
                     MacAddress = enterFace.GetPhysicalAddress()
                 };
                 return interfaceData;
@@ -69,9 +63,13 @@ namespace MyPacketCapturer
             // probably should check if i return null. shouldn't be possible to get null if i'm on the internet though. 
             return null;
         }
+        #endregion
 
+        #region arp Table functions
         public static Dictionary<IPAddress,PhysicalAddress> PopulateArpDict()
         {
+            //This function essentially runs ARP -a in a command prompt and stores that data in a dictionary.
+
             Dictionary<IPAddress,PhysicalAddress> ipToMac = new Dictionary<IPAddress, PhysicalAddress>();
             Regex macAddressPattern = new Regex("([A-Fa-f0-9]{2}[-]){5}([A-Fa-f0-9]{2})");
             // Start a new process that'll run the arp -a command.
@@ -88,16 +86,16 @@ namespace MyPacketCapturer
                     Arguments = "/C arp -a" // /C tells the process to exit right after the command.
                 }
             };
-            cmd.Start();
-            var era = cmd
+            cmd.Start(); // run the command and store the output.
+            var output = cmd
                 .StandardOutput
                 .ReadToEnd()
                 .TrimEnd()
                 .Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
 
-            // strip off all the meta data from each interface arp table. 
-            var regexSplit = era.Where(z => macAddressPattern.IsMatch(z)).ToArray();
+            // strip off all the meta data from each interface arp table. Only grab the lines that have a valid macAddress.
+            var regexSplit = output.Where(z => macAddressPattern.IsMatch(z)).ToArray();
 
             foreach (var info in regexSplit)
             {
@@ -108,12 +106,61 @@ namespace MyPacketCapturer
                 IPAddress ipAddress = IPAddress.Parse(ip);
                 PhysicalAddress physicalAddress = PhysicalAddress.Parse(mac);
 
-                if (ipToMac.ContainsKey(ipAddress))
+                if (ipToMac.ContainsKey(ipAddress) || mac == "FF-FF-FF-FF-FF-FF") // not in the dictionary already and isn't the broadcast Address
                     continue;
                 ipToMac.Add(ipAddress, physicalAddress);
             }
 
             return ipToMac;
         }
+        #endregion
+
+        #region Packet Building
+
+        //PCAP.NET FTW!!!!!!
+        // https://github.com/PcapDotNet/Pcap.Net
+        public static EthernetLayer BuildEthernetFrame(MacAddress victimAddress, MacAddress destination)
+        {
+            // Source address is the victim! We want to make it seem like they sent out the ping request when it was really me.
+            return new EthernetLayer()
+            {
+                Source = victimAddress,
+                Destination = destination,
+                EtherType = EthernetType.None
+            };
+        }
+
+        public static IpV4Layer BuildIpV4Frame(IpV4Address victimsIP, IpV4Address destinationIp, byte ttl)
+        {
+            return new IpV4Layer()
+            {
+                Source = victimsIP,
+                CurrentDestination = destinationIp,
+                Fragmentation = IpV4Fragmentation.None,
+                HeaderChecksum = null, // automatically figured out
+                Identification = 123, // made this up
+                Options = IpV4Options.None, // figure it out yourself.
+                Protocol = null, // will figure itself out.
+                Ttl = ttl,
+                TypeOfService = 0
+            };
+        }
+
+        public static IcmpLayer BuildIcmpFrame()
+        {
+            return new IcmpEchoLayer()
+            {
+                Checksum = null, // will be figured out automatically..
+                Identifier = 4352, // made these 2 values up..
+                SequenceNumber = 0,
+            };
+        }
+
+        public static Packet BuildIcmPacket(EthernetLayer ethernetFrame, IpV4Layer IpFrame , IcmpLayer IcmpFrame)
+        {
+            return new PacketBuilder(ethernetFrame,IpFrame,IcmpFrame).Build(DateTime.Now);
+        }
+
+        #endregion
     }
 }

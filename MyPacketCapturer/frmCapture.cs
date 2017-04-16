@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PacketDotNet;
+using PcapDotNet.Core;
 using SharpPcap;
 
 namespace MyPacketCapturer
@@ -18,6 +19,7 @@ namespace MyPacketCapturer
         // all are defined in SharpPcap devices.
         CaptureDeviceList devices; // all devices on machine.
         public static ICaptureDevice device; // selected device.
+        public static PacketDevice myDevice;
         public static string stringPacket = "";  // packets captured. 
         private static int numPackets = 0;
         private frmSend fsend; //Form to send packets.
@@ -142,7 +144,13 @@ namespace MyPacketCapturer
 
         private void cmbDevices_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //PCAP.net uses a different object for it's devices for SharpPcap to represent the same interface.
+            // I need to match up the devices where the name and description are the 
             device = devices[cmbDevices.SelectedIndex];
+            myDevice =
+                LivePacketDevice.AllLocalMachine
+                    .FirstOrDefault(d => d.Name == device.Name && d.Description == device.Description);
+
             cmbDevices.Text = device.Description;
             txtGUID.Text = device.Name;
             registerHandler();

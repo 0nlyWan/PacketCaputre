@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PacketDotNet;
 
 namespace MyPacketCapturer
 {
@@ -81,6 +82,7 @@ namespace MyPacketCapturer
             {
                 //for(int j = 0; j < 100000000; j++)
                     frmCapture.device.SendPacket(packet); // device.sendPacket is apart of sharpPcap reference
+                   
             }
             catch (Exception Exception)
             {
