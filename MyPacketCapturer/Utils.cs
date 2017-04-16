@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -7,7 +8,9 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using PcapDotNet.Base;
 using PcapDotNet.Packets;
+using PcapDotNet.Packets.Arp;
 using PcapDotNet.Packets.Ethernet;
 using PcapDotNet.Packets.Icmp;
 using PcapDotNet.Packets.IpV4;
@@ -18,6 +21,7 @@ namespace MyPacketCapturer
     static class Utils
         // Static class of just utility functions.
     {
+        private static Dictionary<IPAddress, PhysicalAddress> arpTable;
         #region Device Data
         public static string IdentifyClass(IPAddress ipAddress)
         {
@@ -66,11 +70,24 @@ namespace MyPacketCapturer
         #endregion
 
         #region arp Table functions
-        public static Dictionary<IPAddress,PhysicalAddress> PopulateArpDict()
-        {
-            //This function essentially runs ARP -a in a command prompt and stores that data in a dictionary.
 
-            Dictionary<IPAddress,PhysicalAddress> ipToMac = new Dictionary<IPAddress, PhysicalAddress>();
+        public static Dictionary<IPAddress, PhysicalAddress> GetArpTable()
+        {
+            if (arpTable == null)
+            {
+                PopulateArpDict();
+                return arpTable;
+            }
+            else
+                return arpTable;
+
+        }
+        private static void PopulateArpDict()
+        {
+            arpTable = new Dictionary<IPAddress, PhysicalAddress>();
+            //This function essentially runs ARP -a in a command prompt and stores that data in a dictionary.
+            
+            //Dictionary<IPAddress,PhysicalAddress> ipToMac = new Dictionary<IPAddress, PhysicalAddress>();
             Regex macAddressPattern = new Regex("([A-Fa-f0-9]{2}[-]){5}([A-Fa-f0-9]{2})");
             // Start a new process that'll run the arp -a command.
             // the addresses in my arp table will be used to ping the victim.
@@ -106,12 +123,12 @@ namespace MyPacketCapturer
                 IPAddress ipAddress = IPAddress.Parse(ip);
                 PhysicalAddress physicalAddress = PhysicalAddress.Parse(mac);
 
-                if (ipToMac.ContainsKey(ipAddress) || mac == "FF-FF-FF-FF-FF-FF") // not in the dictionary already and isn't the broadcast Address
+                if (arpTable.ContainsKey(ipAddress) || mac == "FF-FF-FF-FF-FF-FF") // not in the dictionary already and isn't the broadcast Address
                     continue;
-                ipToMac.Add(ipAddress, physicalAddress);
+                arpTable.Add(ipAddress, physicalAddress);
             }
 
-            return ipToMac;
+            //return arpTable;
         }
         #endregion
 
@@ -161,6 +178,23 @@ namespace MyPacketCapturer
             return new PacketBuilder(ethernetFrame,IpFrame,IcmpFrame).Build(DateTime.Now);
         }
 
+        public static ArpLayer BuildArpFrame(PhysicalAddress SenderMac, IPAddress SenderIP, IPAddress TargetIpAddress)
+        {
+            return new ArpLayer()
+            {
+                Operation = ArpOperation.Request,
+                ProtocolType = EthernetType.IpV4,
+                SenderHardwareAddress = SenderMac.GetAddressBytes().AsReadOnly(),
+                SenderProtocolAddress = SenderIP.GetAddressBytes().AsReadOnly(),
+                TargetHardwareAddress = new byte[] {0, 0, 0, 0, 0, 0}.AsReadOnly(),
+                TargetProtocolAddress = TargetIpAddress.GetAddressBytes().AsReadOnly(),
+            };
+        }
+
+        public static Packet BuildArpPacket(EthernetLayer ethernetFrame, ArpLayer arpFrame)
+        {
+            return new PacketBuilder(ethernetFrame,arpFrame).Build(DateTime.Now);
+        }
         #endregion
     }
 }

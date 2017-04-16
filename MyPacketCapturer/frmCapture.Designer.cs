@@ -43,13 +43,14 @@
             this.sendWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.attacksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smurfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.synFoodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rogueDHCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.arpCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.txtNumPackets = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtGUID = new System.Windows.Forms.TextBox();
-            this.synFoodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rogueDHCPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +87,7 @@
             this.txtPackets.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtPackets.Size = new System.Drawing.Size(796, 488);
             this.txtPackets.TabIndex = 2;
+            this.txtPackets.TextChanged += new System.EventHandler(this.txtPackets_TextChanged);
             // 
             // timer1
             // 
@@ -163,7 +165,8 @@
             this.attacksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.smurfToolStripMenuItem,
             this.synFoodToolStripMenuItem,
-            this.rogueDHCPToolStripMenuItem});
+            this.rogueDHCPToolStripMenuItem,
+            this.arpCacheToolStripMenuItem});
             this.attacksToolStripMenuItem.Name = "attacksToolStripMenuItem";
             this.attacksToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.attacksToolStripMenuItem.Text = "Attacks";
@@ -171,9 +174,28 @@
             // smurfToolStripMenuItem
             // 
             this.smurfToolStripMenuItem.Name = "smurfToolStripMenuItem";
-            this.smurfToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.smurfToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.smurfToolStripMenuItem.Text = "Smurf";
             this.smurfToolStripMenuItem.Click += new System.EventHandler(this.smurfToolStripMenuItem_Click);
+            // 
+            // synFoodToolStripMenuItem
+            // 
+            this.synFoodToolStripMenuItem.Name = "synFoodToolStripMenuItem";
+            this.synFoodToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.synFoodToolStripMenuItem.Text = "Syn Flood";
+            // 
+            // rogueDHCPToolStripMenuItem
+            // 
+            this.rogueDHCPToolStripMenuItem.Name = "rogueDHCPToolStripMenuItem";
+            this.rogueDHCPToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rogueDHCPToolStripMenuItem.Text = "Rogue DHCP";
+            // 
+            // arpCacheToolStripMenuItem
+            // 
+            this.arpCacheToolStripMenuItem.Name = "arpCacheToolStripMenuItem";
+            this.arpCacheToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.arpCacheToolStripMenuItem.Text = "Arp Cache";
+            this.arpCacheToolStripMenuItem.Click += new System.EventHandler(this.arpCacheToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -204,18 +226,6 @@
             this.txtGUID.Name = "txtGUID";
             this.txtGUID.Size = new System.Drawing.Size(796, 26);
             this.txtGUID.TabIndex = 6;
-            // 
-            // synFoodToolStripMenuItem
-            // 
-            this.synFoodToolStripMenuItem.Name = "synFoodToolStripMenuItem";
-            this.synFoodToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.synFoodToolStripMenuItem.Text = "Syn Flood";
-            // 
-            // rogueDHCPToolStripMenuItem
-            // 
-            this.rogueDHCPToolStripMenuItem.Name = "rogueDHCPToolStripMenuItem";
-            this.rogueDHCPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rogueDHCPToolStripMenuItem.Text = "Rogue DHCP";
             // 
             // frmCapture
             // 
@@ -267,6 +277,7 @@
         private System.Windows.Forms.ToolStripMenuItem smurfToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem synFoodToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rogueDHCPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem arpCacheToolStripMenuItem;
     }
 }
 

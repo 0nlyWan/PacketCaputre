@@ -24,6 +24,7 @@ namespace MyPacketCapturer
         private static int numPackets = 0;
         private frmSend fsend; //Form to send packets.
         private FrmSmurf Fsmurf;
+        private arpCache farp;
 
         public frmCapture()
         {
@@ -223,6 +224,17 @@ namespace MyPacketCapturer
                 Fsmurf = new FrmSmurf();
                 Fsmurf.Show();
             }
+        }
+
+        private void arpCacheToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            farp = new arpCache();
+            farp.Show();
+        }
+
+        private void txtPackets_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -23,14 +23,14 @@ namespace MyPacketCapturer
     {
         // Only want 1 instance of this form up.
         public static int Instantiations = 0;
-        public static Dictionary<IPAddress,PhysicalAddress> ipToMac = new Dictionary<IPAddress, PhysicalAddress>();
+        public static Dictionary<IPAddress, PhysicalAddress> arpTable;
         public static InterfaceData deviceInfo;
         public FrmSmurf()
         {
             InitializeComponent();
             Instantiations++;
             deviceInfo = Utils.ReturnInterfaceData();
-            ipToMac = Utils.PopulateArpDict();
+            arpTable = Utils.GetArpTable();
 
             //filter the dictionary to only grab the ip/mac of the clients on the same subnet.
             arpTableFiltering();
@@ -45,7 +45,7 @@ namespace MyPacketCapturer
 
             
             txtMacAddress.Text = MacAddressFormat(deviceInfo.MacAddress);
-            cboAttackers.Items.AddRange(ipToMac.Keys.ToArray());
+            cboAttackers.Items.AddRange(arpTable.Keys.ToArray());
         }
 
         private void FrmSmurf_Load(object sender, EventArgs e)
@@ -65,7 +65,7 @@ namespace MyPacketCapturer
             var client = (IPAddress)cboAttackers.SelectedItem;
 
 
-            txtVictimMac.Text = ipToMac.ContainsKey(client) ? MacAddressFormat(ipToMac[client]) : "I should never get here";
+            txtVictimMac.Text = arpTable.ContainsKey(client) ? MacAddressFormat(arpTable[client]) : "I should never get here";
             txtVictimIP.Text = client.ToString();
         }
 
@@ -87,7 +87,7 @@ namespace MyPacketCapturer
             while (btnSend.Text != "SEND!")
             {
                 // run this asynchronously so the UI isn't halted
-                foreach (KeyValuePair<IPAddress, PhysicalAddress> kvp in ipToMac)
+                foreach (KeyValuePair<IPAddress, PhysicalAddress> kvp in arpTable)
                 {
                     if (kvp.Key.ToString() == txtVictimIP.Text)
                         continue; // we don't want the victim pinging himself lol.
@@ -116,7 +116,7 @@ namespace MyPacketCapturer
             }
         }
 
-        private string MacAddressFormat(PhysicalAddress mac)
+        public static string MacAddressFormat(PhysicalAddress mac)
         {   
             // just a function to format mac address with ":"
             return string.Join(":", mac.GetAddressBytes().Select(b => b.ToString("X2")));
@@ -137,16 +137,16 @@ namespace MyPacketCapturer
 
             // if it's a class A addresss, the first octet must be the same as my IP
             if (myIpClass == "Class A")
-                ipToMac = ipToMac.Where(ip => ip.Key.GetAddressBytes()[0] == myIP[0])
+                arpTable = arpTable.Where(ip => ip.Key.GetAddressBytes()[0] == myIP[0])
                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             // first 2 AddressBytes have to be the same if Class B
             else if (myIpClass == "Class B")
-                ipToMac = ipToMac.Where(ip => ip.Key.GetAddressBytes()[0] == myIP[0] && ip.Key.GetAddressBytes()[1] == myIP[1])
+                arpTable = arpTable.Where(ip => ip.Key.GetAddressBytes()[0] == myIP[0] && ip.Key.GetAddressBytes()[1] == myIP[1])
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             // if it's not class A or B then it's class C.... so the first 3 octes need to match(not worried about D or E) or F?
             else
-                ipToMac = ipToMac.Where(
+                arpTable = arpTable.Where(
                         ip =>
                             ip.Key.GetAddressBytes()[0] == myIP[0] && ip.Key.GetAddressBytes()[1] == myIP[1] &&
                             ip.Key.GetAddressBytes()[2] == myIP[2])
